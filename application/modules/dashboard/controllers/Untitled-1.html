@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Interface</title>
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  .sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+  }
+  .sidebar a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+  }
+  .sidebar a:hover {
+    color: #f1f1f1;
+  }
+  .main-content {
+    margin-left: 250px;
+    padding: 0px 10px;
+  }
+  .header {
+    background-color: #f1f1f1;
+    padding: 10px;
+    text-align: right;
+  }
+  .card {
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+    width: 40%;
+    border-radius: 5px;
+    display: inline-block;
+    margin: 10px;
+    padding: 2px 16px;
+  }
+  .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  }
+  .container {
+    padding: 2px 16px;
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <a href="#dashboard">Dashboard</a>
+  <a href="#transactions">Transactions</a>
+  <a href="#settlement">Settlement</a>
+  <a href="#customer">Customer</a>
+  <a href="#logout">Logout</a>
+</div>
+
+<div class="main-content">
+  <div class="header">
+    <p>Joseph William | Administrator</p>
+  </div>
+  
+  <!-- Cards for statistics -->
+  <div class="card">
+    <div class="container">
+      <h4><b>1000 CUSTOMERS</b></h4>
+    </div>
+  </div>
+  
+  <div class="card">
+    <div class="container">
+      <h4><b>N1252 REVENUE</b></h4>
+    </div>
+  </div>
+  
+  <!-- Add more cards as needed -->
+  
+  <!-- Customer Satisfaction Section -->
+  <div class="card">
+    <div class="container">
+      <h4><b>Customer Satisfaction</b></h4>
+      <!-- Content will go here -->
+    </div>
+  </div>
+  
+  <!-- Today's transaction and settlement buttons -->
+  <button>Today's transaction</button>
+  <button>Today's settlement</button>
+  
+</div>
+
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Responsive Dashboard</title>
+<style>
+  body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  .sidebar {
+    height: 100%;
+    width: 250px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: -250px; /* Start off-screen */
+    background-color: #111;
+    overflow-x: hidden;
+    padding-top: 20px;
+    transition: 0.5s; /* Smooth slide in/out */
+  }
+  .sidebar a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+  }
+  .sidebar a:hover {
+    color: #f1f1f1;
+  }
+  .main-content {
+    transition: margin-left 0.5s;
+    padding: 20px;
+  }
+  .openbtn {
+    font-size: 20px;
+    cursor: pointer;
+    background-color: #111;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+  }
+  .openbtn:hover {
+    background-color: #444;
+  }
+  @media screen and (max-width: 600px) {
+    .sidebar {width: 100%;}
+    .openbtn {display: inline-block;}
+    .main-content {margin-left: 0;}
+  }
+</style>
+</head>
+<body>
+
+<div id="mySidebar" class="sidebar">
+  <a href="javascript:void(0)" class="closebtn" onclick="toggleSidebar()">×</a>
+  <a href="#dashboard">Dashboard</a>
+  <a href="#transactions">Transactions</a>
+  <a href="#settlement">Settlement</a>
+  <a href="#customer">Customer</a>
+  <a href="#logout">Logout</a>
+</div>
+
+<div class="main-content">
+  <button class="openbtn" onclick="toggleSidebar()">☰ Open Sidebar</button>  
+  <!-- Rest of your page content -->
+</div>
+
+<script>
+function toggleSidebar() {
+  var sidebar = document.getElementById("mySidebar");
+  if (sidebar.style.left === "-250px") {
+    sidebar.style.left = "0";
+  } else {
+    sidebar.style.left = "-250px";
+  }
+}
+</script>
+
+</body>
+</html>
