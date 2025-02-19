@@ -263,7 +263,7 @@ public function insert_customer_wallet($data) {
 }
 
 public function get_all_customer_wallets() {
-    $this->db->select('customer_wallets.*, users.username, fund_type.fundname');
+    $this->db->select('customer_wallets.*, fund_type.fundname');
     $this->db->from('customer_wallets');
     $this->db->join('users', 'users.id = customer_wallets.customer_id', 'left');
     $this->db->join('fund_type', 'fund_type.id = customer_wallets.fund_id', 'left');
@@ -291,5 +291,26 @@ public function get_all_customer_wallets() {
         $this->db->where('phonenumber', $phonenumber);
         return $this->db->update('users');
     }
+
+    public function get_wallet_balance($phone) {
+        $this->db->select('wallet_balance');
+        $this->db->from('customer_wallets');
+        $this->db->where('customer_id', $phone);
+        $this->db->order_by('insert_dt', 'DESC'); // Get the latest balance based on insert_dt
+        $result = $this->db->get()->row_array();
+    
+        // Return latest wallet balance or 0 if not found
+        return isset($result['wallet_balance']) ? $result['wallet_balance'] : 0;
+    }
+
+    public function get_user_by_phones($phone) {
+        return $this->db->select('username, user_type_id')
+                        ->where('phonenumber', $phone)
+                        ->get('users')
+                        ->row_array();
+    }
+    
+    
+    
 
 }

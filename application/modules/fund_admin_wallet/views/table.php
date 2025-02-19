@@ -23,9 +23,9 @@
                 <div class="col-lg-12">
                     <div class="card">
                         <div class="header">
-                            <h2><a href="<?php echo base_url('fund_admin_wallet/adds_fund'); ?>"><strong>Add
+                            <!-- <h2><a href="<?php //echo base_url('fund_admin_wallet/adds_user_fund'); ?>"><strong>Add
                                         Fund Type</strong></a>
-                            </h2>
+                            </h2> -->
                             <ul class="header-dropdown">
                                 <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle"
                                         data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -51,11 +51,12 @@
                                             <th>Username</th>
                                             <th>Fund Name</th>
                                             <th>Amount</th>
+                                            <th>Wallet Balance</th>
                                             <th>Operation Type</th>
                                             <th>Description</th>
                                             <th>Status</th>
                                             <th>Created At</th>
-                                            <th>Actions</th>
+                                            <!-- <th>Actions</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -67,14 +68,15 @@
                                             <td><?= htmlspecialchars($wallet['username']); ?></td>
                                             <td><?= htmlspecialchars($wallet['fundname']); ?></td>
                                             <td><?= htmlspecialchars($wallet['amount']); ?></td>
+                                            <td><?= htmlspecialchars($wallet['wallet_balance']); ?></td>
                                             <td><?= htmlspecialchars($wallet['operation_type']); ?></td>
-                                            <td><?= htmlspecialchars($wallet['DESCRIPTION']); ?></td>
-                                            <td><?= htmlspecialchars($wallet['STATUS']); ?></td>
+                                            <td><?= htmlspecialchars($wallet['description']); ?></td>
+                                            <td><?= htmlspecialchars($wallet['status']); ?></td>
                                             <td><?= htmlspecialchars($wallet['insert_dt']); ?></td>
-                                            <td>
-                                                <a href="<?php echo base_url('customer_wallets/view/' . $wallet['id']); ?>"
+                                            <!-- <td>
+                                                <a href="<?php // echo base_url('customer_wallets/view/' . $wallet['id']); ?>"
                                                     class="btn btn-info btn-sm">View</a>
-                                            </td>
+                                            </td> -->
                                         </tr>
                                         <?php endforeach; ?>
                                         <?php else: ?>
