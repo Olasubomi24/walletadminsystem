@@ -29,9 +29,9 @@
                             </div>
                             <button type="submit" class="btn btn-primary btn-block waves-effect waves-light">SIGN IN</button>
                             <div class="signin_with mt-3">
-                                <a class="link" href="<?= base_url('auth/forgot_password') ?>">Forgot Password?</a>
+                                <a class="link" href="<?//= base_url('auth/reset_password') ?>">Forgot Password?</a>
                                 <br>
-                                <a class="link" href="<?= base_url('auth/signup') ?>">Don't have an account? Sign up</a>
+                                <a class="link" href="<?//= base_url('auth/sign_up') ?>">Don't have an account? Sign up</a>
                             </div>
                         </div>
                     </form>
@@ -62,7 +62,6 @@ $(document).ready(function () {
             data: $(this).serialize(),
             dataType: "json",
             beforeSend: function (xhr) {
-                // Set the X-Requested-With header to identify AJAX requests
                 xhr.setRequestHeader("X-Requested-With", "XMLHttpRequest");
 
                 Swal.fire({
@@ -75,13 +74,19 @@ $(document).ready(function () {
             success: function (response) {
                 Swal.close();
                 if (response.status === "success") {
+                    let redirectUrl = "<?= base_url('dashboard'); ?>";
+
+                    if (response.user_details && response.user_details.status === "1") {
+                        redirectUrl = "<?= base_url('auth/reset_password'); ?>";
+                    }
+
                     Swal.fire({
                         icon: "success",
                         title: "Login Successful!",
                         timer: 2000,
                         showConfirmButton: false
                     }).then(() => {
-                        window.location.href = response.redirect || "<?= base_url('dashboard'); ?>";
+                        window.location.href = redirectUrl;
                     });
                 } else {
                     Swal.fire({
@@ -110,4 +115,5 @@ $(document).ready(function () {
         icon.toggleClass("zmdi-eye zmdi-eye-off");
     });
 });
+
 </script>

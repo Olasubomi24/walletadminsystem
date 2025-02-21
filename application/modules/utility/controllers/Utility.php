@@ -102,16 +102,18 @@ class Utility extends MX_Controller
     }
 
 
-    public function user_creation($firstname, $lastname, $username, $email, $password, $user_type_id)
+    public function user_creation($firstname, $lastname,$phonenumber, $username, $email, $password, $user_type_id)
 {
     // Prepare the data to be inserted
     $data = [
         'firstname' => $firstname,
         'lastname' => $lastname,
+        'phonenumber' => $phonenumber,
         'username' => $username,
         'email' => $email,
         'password' => $password,
-        'user_type_id' => $user_type_id
+        'user_type_id' => $user_type_id,
+        'status' => 1
     ];
 
     // Insert the data into the database
@@ -130,18 +132,27 @@ class Utility extends MX_Controller
     
 public function change_password($email, $password)
 {
-    $data = array('password' => $password);
-    $this->db->where('email', $email);
-    $this->db->update('user_accounts', $data);
-
-    if ($this->db->affected_rows() > 0) {
-        $response = array('status_code' => '0', 'message' => 'Password change successful');
-    } else {
-        $response = array('status_code' => '1', 'message' => 'Incorrect user details or no change made');
-    }
+    // Debug: Print email and password before the query
+    log_message('error', 'Email: ' . $email . ' | Password: ' . $password);
     
-    return $response;
+    // Update query: Change password and update status if it is 1
+    $sql = "UPDATE admins 
+            SET password = ?, status = CASE WHEN status = 1 THEN 0 ELSE status END 
+            WHERE email = ?";
+    // print_r($sql);die();
+    $this->db->query($sql, array($password, $email));
+
+    // Check if any rows were affected
+    if ($this->db->affected_rows() > 0) {
+        return array('status_code' => '0', 'message' => 'Password change successful, status updated if applicable.');
+    } else {
+        return array('status_code' => '1', 'message' => 'No changes made (Password might be same as old one or user not found).');
+    }
 }
+
+
+
+
 function is_email_exist($email){
     $response = array("status_code" => "0" , "message" => "Email not found");
     $query = $this->db->query("select email from user_accounts where email = '$email'")->result_array();
@@ -151,12 +162,20 @@ function is_email_exist($email){
     return $response;
 }
 
+// Fetch all fund types
+public function get_user_id($email) {
+    return $this->db->select('user_type_id')
+                    ->where('email', $email) // Move where before get()
+                    ->get('admins')
+                    ->row_array()['user_type_id'] ?? 0;
+}
+
     // Helper function to check permissions
-function check_permission($logged_in_user_type_id, $target_email)
+    function check_permission($logged_in_user_type_id, $target_email)
     {
         // Fetch the target user's user_type_id
         $query = $this->db->select('user_type_id')
-                          ->from('user_accounts')
+                          ->from('admins') // Assuming the table is named 'admins'
                           ->where('email', $target_email)
                           ->get();
     
@@ -165,7 +184,7 @@ function check_permission($logged_in_user_type_id, $target_email)
         }
     
         $target_user_type_id = $query->row()->user_type_id;
-    
+
         // Admin (user_type_id = 2) can update any user's password
         if ($logged_in_user_type_id == 2) {
             return true;
@@ -179,15 +198,24 @@ function check_permission($logged_in_user_type_id, $target_email)
         return false; // No permission
     }
     public function reset_password_update($email, $new_password)
-{
-    $this->db->where('email', $email);
-    $this->db->update('user_accounts', ['password' => $new_password]);
-
-    if ($this->db->affected_rows() > 0) {
-        return ['status_code' => '0', 'message' => 'Password updated successfully'];
-    } else {
-        return ['status_code' => '1', 'message' => 'Failed to update password'];
+    {
+        $this->db->where('email', $email);
+        $this->db->update('admins', ['password' => $new_password]);
+        if ($this->db->affected_rows() > 0) {
+            return ['status_code' => '0', 'message' => 'Password updated successfully'];
+        } else {
+            return ['status_code' => '1', 'message' => 'Failed to update password'];
+        }
     }
+
+    
+
+
+
+public function get_user_types()
+{
+    $query = $this->db->get('admins'); // Assuming 'user_types' table exists
+    return $query->result_array(); // Return as an array
 }
 
 public function get_all_funds() {
@@ -219,11 +247,19 @@ public function get_user_by_phone($phone) {
 }
 
 // Fetch all fund types
+// public function get_fund_types() {
+//     return $this->db->select('id, fundname')
+//                     ->get('fund_type')
+//                     ->result_array();
+// }
+
 public function get_fund_types() {
     return $this->db->select('id, fundname')
+                    ->where('status', 0) // Added status condition
                     ->get('fund_type')
                     ->result_array();
 }
+
 
 // Fetch fund by ID
 public function get_funds_by_id($fund_id) {
@@ -308,6 +344,39 @@ public function get_all_customer_wallets() {
                         ->where('phonenumber', $phone)
                         ->get('users')
                         ->row_array();
+    }
+
+    public function get_main_account_balance($customer_id) {
+        return $this->db->select('SUM(amount) as total')
+                        ->from('customer_wallets')
+                        ->where('customer_id', $customer_id)
+                        ->where('operation_type', 'CR')
+                        ->where('status', 'successful')
+                        ->get()
+                        ->row_array()['total'] ?? 0;
+    }
+
+    public function get_total_debit_by_date($customer_id, $date) {
+        return $this->db->select('SUM(amount) as total')
+                        ->from('customer_wallets')
+                        ->where('customer_id', $customer_id)
+                        ->where('operation_type', 'DR')
+                        ->where('DATE(insert_dt)', $date)
+                        ->where('status', 'successful')
+                        ->get()
+                        ->row_array()['total'] ?? 0;
+    }
+    
+    public function get_total_debit_by_range($customer_id, $start_date, $end_date) {
+        return $this->db->select('SUM(amount) as total')
+                        ->from('customer_wallets')
+                        ->where('customer_id', $customer_id)
+                        ->where('operation_type', 'DR')
+                        ->where('DATE(insert_dt) >=', $start_date)
+                        ->where('DATE(insert_dt) <=', $end_date)
+                        ->where('status', 'successful')
+                        ->get()
+                        ->row_array()['total'] ?? 0;
     }
     
     

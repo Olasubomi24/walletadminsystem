@@ -17,7 +17,9 @@
                         <div class="input-group mb-3">
                             <input type="text" name="lastname" class="form-control" placeholder="Last Name" required>
                         </div>
-
+                        <div class="input-group mb-3">
+                            <input type="text" name="phonenumber" class="form-control" placeholder="Phonenumber" required>
+                        </div>
                         <div class="input-group mb-3">
                             <input type="email" name="email" class="form-control" placeholder="Enter Email" required>
                             <div class="input-group-append">
@@ -35,14 +37,6 @@
                             </div>
                         </div>
                         <div class="input-group mb-3">
-                                <select name="user_type_id" class="form-control" required>
-                                    <option value="" disabled selected>Select User Type</option>
-                                    <option value="1">User</option>
-                                    <option value="2">Admin</option>
-                                </select>
-                            </div>
-
-                        <div class="input-group mb-3">
                             <input type="password" name="confirm_password" id="confirm_password" class="form-control"
                                 placeholder="Confirm Password" required>
                             <div class="input-group-append">
@@ -51,7 +45,16 @@
                                 </span>
                             </div>
                         </div>
+                        <div class="input-group mb-3">
+                                <select name="user_type_id" class="form-control" required>
+                                    <option value="" disabled selected>Select User Type</option>
+                                    <option value="1">User</option>
+                                    <option value="2">Admin</option>
+                                </select>
+                            </div>
 
+                      
+<!-- 
 
                         <div class="input-group mb-3">
                             <input type="text" name="userPhoneNumber" class="form-control" placeholder="Phone Number"
@@ -59,7 +62,7 @@
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="zmdi zmdi-phone"></i></span>
                             </div>
-                        </div>
+                        </div> -->
 
                         <div class="checkbox">
                             <input id="agree_terms" type="checkbox" name="agree_terms" required>

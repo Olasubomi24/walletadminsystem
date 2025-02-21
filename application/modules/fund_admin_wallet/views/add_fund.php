@@ -1,3 +1,8 @@
+
+
+
+
+
 <section class="content">
     <div class="container">
         <h2>Add Fund</h2>
@@ -7,23 +12,16 @@
         <div class="row clearfix">
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="text" id="phone" name="phone" class="form-control" placeholder="Phone Number" required>
+                    <input type="hidden" id="phone" name="phone" value="<?php echo htmlspecialchars(empty($_SESSION['phonenumber']) ? '' : $_SESSION['phonenumber'], ENT_QUOTES, 'UTF-8'); ?>">
+                    <input type="text" id="username" name="username" class="form-control" placeholder="Username" readonly required>
                 </div>
             </div>
 
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="text" id="username" name="username" class="form-control" placeholder="Username"
-                        readonly required>
+                    <input type="text" id="description" name="description" class="form-control" placeholder="Description" required>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="text" id="description" name="description" class="form-control"
-                        placeholder="Description" required>
-                </div>
-            </div>
-
 
             <div class="col-md-4">
                 <div class="form-group">
@@ -38,8 +36,7 @@
 
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="number" id="amount" name="amount" class="form-control" placeholder="Amount" readonly
-                        required>
+                    <input type="number" id="amount" name="amount" class="form-control" placeholder="Amount" readonly required>
                 </div>
             </div>
 
@@ -56,9 +53,11 @@
 
 <script>
 $(document).ready(function() {
-    $("#phone").on("blur", function() {
-        let phone = $(this).val();
+    // Get phone number from hidden input
+    let phone = $("#phone").val();
 
+    // Fetch user details based on phone number
+    if (phone) {
         $.ajax({
             url: "<?= base_url('fund_admin_wallet/get_user_details') ?>",
             type: "POST",
@@ -80,8 +79,7 @@ $(document).ready(function() {
                 Swal.fire("Error!", "Something went wrong", "error");
             }
         });
-    });
-
+    }
 
     $("#fundname").on("change", function() {
         let fund_id = $(this).val();
@@ -105,22 +103,18 @@ $(document).ready(function() {
         }).then((result) => {
             if (result.isConfirmed) {
                 let formData = $(this).serialize() + "&security_answer=" + result.value;
-                $.post("<?= base_url('fund_admin_wallet/add_fund') ?>", formData, function(
-                    response) {
+                $.post("<?= base_url('fund_admin_wallet/add_fund') ?>", formData, function(response) {
                     Swal.fire({
                         title: response.message,
-                        icon: response.status === 'success' ? 'success' :
-                            'error'
+                        icon: response.status === 'success' ? 'success' : 'error'
                     }).then(() => {
                         if (response.status === 'success') {
-                            window.location.href =
-                                "<?= base_url('fund_admin_wallet/index') ?>";
+                            window.location.href = "<?= base_url('fund_admin_wallet/index') ?>";
                         }
                     });
                 }, 'json');
             }
         });
     });
-
 });
 </script>

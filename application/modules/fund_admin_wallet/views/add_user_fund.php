@@ -5,43 +5,34 @@
         <?php echo form_open('fund_admin_wallet/add_user_fund', ['id' => 'fundForm']); ?>
 
         <div class="row clearfix">
-            <!-- Admin Phone -->
-            <div class="col-md-4">
-                <div class="form-group">
-                    <input type="text" id="admin_phone" name="admin_phone" class="form-control"
-                        placeholder="Admin Phone Number" required>
-                </div>
-            </div>
+            <!-- Admin Phone (Hidden) -->
+            <input type="hidden" id="admin_phone" name="admin_phone" value="<?php echo htmlspecialchars(empty($_SESSION['phonenumber']) ? '' : $_SESSION['phonenumber'], ENT_QUOTES, 'UTF-8'); ?>">
 
-            <!-- Admin Username -->
+            <!-- Admin Username (Visible & Readonly) -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="text" id="admin_username" name="admin_username" class="form-control"
-                        placeholder="Admin Username" readonly required>
+                    <input type="text" id="admin_username" name="admin_username" class="form-control" placeholder="Admin Username" readonly required>
                 </div>
             </div>
 
             <!-- User Phone -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="text" id="user_phone" name="user_phone" class="form-control"
-                        placeholder="User Phone Number" required>
+                    <input type="text" id="user_phone" name="user_phone" class="form-control" placeholder="User Phone Number" required>
                 </div>
             </div>
 
             <!-- User Username -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="text" id="user_username" name="user_username" class="form-control"
-                        placeholder="User Username" readonly required>
+                    <input type="text" id="user_username" name="user_username" class="form-control" placeholder="User Username" readonly required>
                 </div>
             </div>
 
             <!-- Description -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="text" id="description" name="description" class="form-control"
-                        placeholder="Description" required>
+                    <input type="text" id="description" name="description" class="form-control" placeholder="Description" required>
                 </div>
             </div>
 
@@ -60,8 +51,7 @@
             <!-- Amount -->
             <div class="col-md-4">
                 <div class="form-group">
-                    <input type="number" id="amount" name="amount" class="form-control" placeholder="Amount" readonly
-                        required>
+                    <input type="number" id="amount" name="amount" class="form-control" placeholder="Amount" readonly required>
                 </div>
             </div>
 
@@ -78,14 +68,13 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(document).ready(function() {
-
-    // Fetch Admin Username & Wallet Balance
-    $("#admin_phone").on("blur", function() {
-        let phone = $(this).val();
+    // Auto-fetch Admin Username based on session phone number
+    let adminPhone = $("#admin_phone").val();
+    if (adminPhone) {
         $.ajax({
             url: "<?= base_url('fund_admin_wallet/get_user_details') ?>",
             type: "POST",
-            data: { phone: phone },
+            data: { phone: adminPhone },
             dataType: "json",
             success: function(response) {
                 if (response.status === 'success') {
@@ -95,9 +84,9 @@ $(document).ready(function() {
                 }
             }
         });
-    });
+    }
 
-    // Fetch User Username & Wallet Balance
+    // Fetch User Username
     $("#user_phone").on("blur", function() {
         let phone = $(this).val();
         $.ajax({
@@ -125,11 +114,9 @@ $(document).ready(function() {
         }, 'json');
     });
 
-    // Submit Form
+    // Submit Form with Security Check
     $("#fundForm").submit(function(event) {
         event.preventDefault();
-
-        let admin_phone = $("#admin_phone").val();
 
         Swal.fire({
             title: 'Security Check',
@@ -154,7 +141,5 @@ $(document).ready(function() {
             }
         });
     });
-
 });
 </script>
-

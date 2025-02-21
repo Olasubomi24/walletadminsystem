@@ -41,61 +41,114 @@ class Auth extends MX_Controller
         $this->template->auth_template($data);
     }
 
+    // public function login()
+    // {
+    //     // Check if the request is an AJAX POST request
+    //     if ($this->input->is_ajax_request() && $this->input->method() === 'post') {
+    //         // Get input data
+    //         $email = trim($this->input->post('email'));
+    //         $password = trim($this->input->post('password'));
+    
+    //         // Validate input (basic validation)
+    //         if (empty($email) || empty($password)) {
+    //             echo json_encode([
+    //                 'status' => 'error',
+    //                 'message' => 'Email and password are required.'
+    //             ]);
+    //             return;
+    //         }
+    
+    //         // Call the utility function to validate user credentials
+    //         $login_response = $this->utility->user_login($email, $password);
+    
+    //         if ($login_response['status_code'] === '0') {
+    //             // Login successful
+    //             $user_details = $login_response['user_details'];
+    
+    //             // Start a session or set session variables as needed
+    //             $this->session->set_userdata([
+    //                 'logged_in' => true,
+    //                 'user_email' => $user_details->email,
+    //                 'firstname' => $user_details->firstname,
+    //                 'lastname' => $user_details->lastname,
+    //                 'phonenumber' => $user_details->phonenumber,
+    //                 'user_type_id' => $user_details->user_type_id, // Store user_type_id in session
+    //                 'user_name' => $user_details->firstname . ' ' . $user_details->lastname
+    //             ]);
+    
+    //             // Return success response with redirect URL
+    //             echo json_encode([
+    //                 'status' => 'success',
+    //                 'message' => 'Login Successful!',
+    //                 'redirect' => base_url('dashboard')
+    //             ]);
+    //         } else {
+    //             // Login failed
+    //             echo json_encode([
+    //                 'status' => 'error',
+    //                 'message' => $login_response['message']
+    //             ]);
+    //         }
+    //     } else {
+    //         // Invalid request
+    //         echo json_encode([
+    //             'status' => 'error',
+    //             'message' => 'Invalid request method.'
+    //         ]);
+    //     }
+    // }
+
     public function login()
-    {
-        // Check if the request is an AJAX POST request
-        if ($this->input->is_ajax_request() && $this->input->method() === 'post') {
-            // Get input data
-            $email = trim($this->input->post('email'));
-            $password = trim($this->input->post('password'));
-    
-            // Validate input (basic validation)
-            if (empty($email) || empty($password)) {
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => 'Email and password are required.'
-                ]);
-                return;
-            }
-    
-            // Call the utility function to validate user credentials
-            $login_response = $this->utility->user_login($email, $password);
-    
-            if ($login_response['status_code'] === '0') {
-                // Login successful
-                $user_details = $login_response['user_details'];
-    
-                // Start a session or set session variables as needed
-                $this->session->set_userdata([
-                    'logged_in' => true,
-                    'user_email' => $user_details->email,
-                    'firstname' => $user_details->firstname,
-                    'lastname' => $user_details->lastname,
-                    'user_type_id' => $user_details->user_type_id, // Store user_type_id in session
-                    'user_name' => $user_details->firstname . ' ' . $user_details->lastname
-                ]);
-    
-                // Return success response with redirect URL
-                echo json_encode([
-                    'status' => 'success',
-                    'message' => 'Login Successful!',
-                    'redirect' => base_url('dashboard')
-                ]);
-            } else {
-                // Login failed
-                echo json_encode([
-                    'status' => 'error',
-                    'message' => $login_response['message']
-                ]);
-            }
-        } else {
-            // Invalid request
+{
+    if ($this->input->is_ajax_request() && $this->input->method() === 'post') {
+        $email = trim($this->input->post('email'));
+        $password = trim($this->input->post('password'));
+
+        if (empty($email) || empty($password)) {
             echo json_encode([
                 'status' => 'error',
-                'message' => 'Invalid request method.'
+                'message' => 'Email and password are required.'
+            ]);
+            return;
+        }
+
+        $login_response = $this->utility->user_login($email, $password);
+          //print_r($login_response);die();
+        if ($login_response['status_code'] === '0') {
+            $user_details = $login_response['user_details'];
+
+            $this->session->set_userdata([
+                'logged_in' => true,
+                'user_email' => $user_details->email,
+                'firstname' => $user_details->firstname,
+                'lastname' => $user_details->lastname,
+                'phonenumber' => $user_details->phonenumber,
+                'user_type_id' => $user_details->user_type_id,
+                'user_name' => $user_details->firstname . ' ' . $user_details->lastname
+            ]);
+
+            echo json_encode([
+                'status' => 'success',
+                'message' => 'Login Successful!',
+                'redirect' => base_url('dashboard'),
+                'user_details' => [
+                    'status' => $user_details->status
+                ]
+            ]);
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $login_response['message']
             ]);
         }
+    } else {
+        echo json_encode([
+            'status' => 'error',
+            'message' => 'Invalid request method.'
+        ]);
     }
+}
+
 
     public function sign_up()
     {
@@ -111,6 +164,7 @@ class Auth extends MX_Controller
         // Set form validation rules
         $this->form_validation->set_rules('firstname', 'Firstname', 'trim|required');
         $this->form_validation->set_rules('lastname', 'Lastname', 'trim|required');
+        $this->form_validation->set_rules('phonenumber', 'Phonenumber', 'trim|required');
         $this->form_validation->set_rules('email', 'Email', 'trim|required|valid_email|is_unique[admins.email]');
         $this->form_validation->set_rules('password', 'Password', 'trim|required|min_length[6]');
         $this->form_validation->set_rules('user_type_id', 'User Type', 'trim|required|in_list[1,2]'); // Ensure valid user type
@@ -128,6 +182,7 @@ class Auth extends MX_Controller
             // Collect input data
             $firstname = $this->input->post('firstname');
             $lastname = $this->input->post('lastname');
+            $phonenumber = $this->input->post('phonenumber');
             $email = $this->input->post('email');
             $password = $this->input->post('password');
             $user_type_id = $this->input->post('user_type_id');
@@ -139,7 +194,7 @@ class Auth extends MX_Controller
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
     
             // Call the utility function to create the user
-            $send_data = $this->utility->user_creation($firstname, $lastname, $username, $email, $hashed_password, $user_type_id);
+            $send_data = $this->utility->user_creation($firstname, $lastname, $phonenumber, $username, $email, $hashed_password, $user_type_id);
     
             if ($send_data['status_code'] == 0) {
                 // Success: User created successfully
@@ -162,6 +217,7 @@ class Auth extends MX_Controller
             ]);
         }
     }
+
     public function reset_password()
     {
 
@@ -176,6 +232,7 @@ class Auth extends MX_Controller
     public function reset_password_update()
     {
         if ($this->input->is_ajax_request() && $this->input->method() === 'post') {
+            $email = $this->input->post('email');
             $new_password = trim($this->input->post('new_password'));
             $confirm_password = trim($this->input->post('confirm_password'));
     
@@ -199,10 +256,10 @@ class Auth extends MX_Controller
             $email = $this->input->post('email');
     
             // Get the logged-in user's type from the session
-            $logged_in_user_type_id = $this->session->userdata('user_type_id');
+            $logged_in_user_type_id = $this->utility->get_user_id('email');
     
             // Check if the logged-in user has permission to update the password
-            if (!$this->utility->check_permission($logged_in_user_type_id, $email)) {
+            if ($this->utility->check_permission($logged_in_user_type_id, $email)) {
                 echo json_encode([
                     'status' => 'error',
                     'message' => 'You do not have permission to update this user\'s password.'
@@ -213,7 +270,7 @@ class Auth extends MX_Controller
             // Hash the new password securely using bcrypt
             $hashed_password = password_hash($new_password, PASSWORD_BCRYPT);
     
-            $update_response = $this->utility->reset_password_update($email, $hashed_password);
+            $update_response = $this->utility->change_password($email, $hashed_password);
     
             if ($update_response['status_code'] === '0') {
                 echo json_encode([
@@ -226,13 +283,9 @@ class Auth extends MX_Controller
                     'message' => $update_response['message']
                 ]);
             }
-        } else {
-            echo json_encode([
-                'status' => 'error',
-                'message' => 'Invalid request method.'
-            ]);
         }
     }
+    
     
 
 

@@ -3,7 +3,7 @@
         <div class="block-header">
             <div class="row">
                 <div class="col-lg-7 col-md-6 col-sm-12">
-                    <h2>Hospital Details</h2>
+                    <h2>History</h2>
                     <button class="btn btn-primary btn-icon mobile_menu" type="button"><i
                             class="zmdi zmdi-sort-amount-desc"></i></button>
 
@@ -27,18 +27,18 @@
                                         Fund Type</strong></a>
                             </h2> -->
                             <ul class="header-dropdown">
-                                <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle"
+                                <!-- <li class="dropdown"> <a href="javascript:void(0);" class="dropdown-toggle"
                                         data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                         <i class="zmdi zmdi-more"></i> </a>
-                                    <!-- <ul class="dropdown-menu dropdown-menu-right slideUp">
+                                    <ul class="dropdown-menu dropdown-menu-right slideUp">
                                         <li><a href="javascript:void(0);">Action</a></li>
                                         <li><a href="javascript:void(0);">Another action</a></li>
                                         <li><a href="javascript:void(0);">Something else</a></li>
-                                    </ul> -->
-                                </li>
-                                <li class="remove">
+                                    </ul>
+                                </li> -->
+                                <!-- <li class="remove">
                                     <a role="button" class="boxs-close"><i class="zmdi zmdi-close"></i></a>
-                                </li>
+                                </li> -->
                             </ul>
                         </div>
                         <div class="body">

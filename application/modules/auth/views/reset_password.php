@@ -9,9 +9,13 @@
                     </div>
                     <form id="resetPasswordForm">
                         <div class="body">
-                            <input type="hidden" name="email" value="<?= $this->session->userdata('reset_email'); ?>">
-                            <input type="hidden" name="user_type_id" value="<?= $this->session->userdata('user_type_id'); ?>">
-
+                            <!-- <input type="hidden" name="user_type_id" value="<?// = $this->session->userdata('user_type_id'); ?>"> -->
+                            <div class="input-group mb-3">
+                                <input type="text" name="email" class="form-control" placeholder="Email" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="zmdi zmdi-account-circle"></i></span>
+                                </div>
+                            </div>
                             <div class="input-group mb-3">
                                 <input type="password" name="new_password" class="form-control" placeholder="New Password" required>
                                 <div class="input-group-append">
@@ -88,7 +92,7 @@ $(document).ready(function () {
                         timer: 2000,
                         showConfirmButton: false
                     }).then(() => {
-                        window.location.href = "<?= base_url('auth/login'); ?>";
+                        window.location.href = "<?= base_url('auth/index'); ?>";
                     });
                 } else {
                     Swal.fire({
